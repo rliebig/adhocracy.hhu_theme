@@ -799,7 +799,7 @@ $(document).ready(function () {
         var vote_button_is_active = function(vote_button) {
             $.each(vote_button).attr("class").split(" "),
                 function(i, object) {
-                if(object === "active") {
+                if (object === "active") {
                     return true;
                 }
             }); 
@@ -815,6 +815,14 @@ $(document).ready(function () {
             $(vote_button).addClass("disabled active");
         }
 
+        var vote_count_update = function(vote, anti_vote vote_for,
+                vote_against) {
+            if (!vote_for & !vote_against)
+                $(vote).text(Number($(vote).text()) +1);
+            if ($(anti_vote).text() !== "0" & vote_against)
+                $(anti_vote).text(Number($(anti_vote).text()) - 1);
+        }
+
         var new_vote = self.attr("class").split(" ")[0];
         var had_already_voted_for = 
             vote_button_is_active(".vote_up");
@@ -822,21 +830,17 @@ $(document).ready(function () {
             vote_button_is_active(".vote_down");
     
         if (new_vote === "vote_up") {
-            if (!had_already_voted_for & !had_already_voted_against)
-                $(".vote_for").text(Number($(".vote_for").text()) + 1);
-            if ($(".vote_against").text() !== "0" & had_already_voted_against)
-                $(".vote_against").text(Number($(".vote_against").text()) - 1);
-    
+            vote_count_update(".vote_for", ".vote_against", 
+                    had_already_voted_for, had_already_voted_against);
+
             vote_button_disable(".vote_down");
 
             if (!had_already_voted_for & !had_already_voted_against) {
                 vote_button_activate(".vote_up");
             }
         } else if (new_vote === "vote_down") {
-            if (!had_already_voted_against & !had_already_voted_for)
-                $(".vote_against").text(Number($(".vote_against").text()) + 1);
-            if ($(".vote_for").text() !== "0" & had_already_voted_for)
-                $(".vote_for").text(Number($(".vote_for").text()) - 1);
+            vote_count_update(".vote_against", ".vote_for",
+                    had_already_voted_against, had_already_voted_for);
 
             vote_button_disable(".vote_up");
 
