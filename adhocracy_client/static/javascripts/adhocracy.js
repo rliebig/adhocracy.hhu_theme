@@ -797,31 +797,33 @@ $(document).ready(function () {
         });
 
         var vote_button_is_active = function(vote_button) {
-            $.each(vote_button).attr("class").split(" "),
+            var return_value = false;
+
+            $.each($(vote_button).attr("class").split(" "),
                 function(i, object) {
                 if (object === "active") {
-                    return true;
+                    return_value = true;
                 }
             }); 
-
-            return false;
-        }
+           
+            return return_value; 
+        };
 
         var vote_button_disable = function(vote_button) {
             $(vote_button).removeClass("disabled active");
-        }
+        };
 
         var vote_button_activate = function(vote_button) {
             $(vote_button).addClass("disabled active");
-        }
+        };
 
-        var vote_count_update = function(vote, anti_vote vote_for,
+        var vote_count_update = function(vote, anti_vote, vote_for,
                 vote_against) {
             if (!vote_for & !vote_against)
-                $(vote).text(Number($(vote).text()) +1);
+                $(vote).text(Number($(vote).text()) + 1);
             if ($(anti_vote).text() !== "0" & vote_against)
                 $(anti_vote).text(Number($(anti_vote).text()) - 1);
-        }
+        };
 
         var new_vote = self.attr("class").split(" ")[0];
         var had_already_voted_for = 
@@ -832,12 +834,11 @@ $(document).ready(function () {
         if (new_vote === "vote_up") {
             vote_count_update(".vote_for", ".vote_against", 
                     had_already_voted_for, had_already_voted_against);
-
             vote_button_disable(".vote_down");
 
             if (!had_already_voted_for & !had_already_voted_against) {
                 vote_button_activate(".vote_up");
-            }
+            } 
         } else if (new_vote === "vote_down") {
             vote_count_update(".vote_against", ".vote_for",
                     had_already_voted_against, had_already_voted_for);
