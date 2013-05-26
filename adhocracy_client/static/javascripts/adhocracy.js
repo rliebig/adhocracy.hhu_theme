@@ -796,34 +796,41 @@ $(document).ready(function () {
             }
         });
 
-        var new_vote = self.attr('class').split(" ")[0];
-        var had_already_voted_for = false;
-        var had_already_voted_against = false;
+        var vote_button_is_active = function(vote_button) {
+            $.each(vote_button).attr("class").split(" "),
+                function(i, object) {
+                if(object === "active") {
+                    return true;
+                }
+            }); 
 
-        $.each($(".vote_up").attr("class").split(" "), function(i, object) {
-            if(object === "active") {
-                had_already_voted_for = true;
-            }
-        });
+            return false;
+        }
 
-        $.each($(".vote_down").attr("class").split(" "),function(i, object) {
-            if(object === "active") {
-                had_already_voted_against = true;
-            }
-        });
+        var vote_button_disable = function(vote_button) {
+            $(vote_button).removeClass("disabled active");
+        }
 
+        var vote_button_activate = function(vote_button) {
+            $(vote_button).addClass("disabled active");
+        }
+
+        var new_vote = self.attr("class").split(" ")[0];
+        var had_already_voted_for = 
+            vote_button_is_active(".vote_up");
+        var had_already_voted_against = 
+            vote_button_is_active(".vote_down");
+    
         if (new_vote === "vote_up") {
             if (!had_already_voted_for & !had_already_voted_against)
                 $(".vote_for").text(Number($(".vote_for").text()) + 1);
             if ($(".vote_against").text() !== "0" & had_already_voted_against)
                 $(".vote_against").text(Number($(".vote_against").text()) - 1);
-
-            $(".vote_down").removeClass("disabled");
-            $(".vote_down").removeClass("active");
+    
+            vote_button_disable(".vote_down");
 
             if (!had_already_voted_for & !had_already_voted_against) {
-                $(".vote_up").addClass("disabled");
-                $(".vote_up").addClass("active");
+                vote_button_activate(".vote_up");
             }
         } else if (new_vote === "vote_down") {
             if (!had_already_voted_against & !had_already_voted_for)
@@ -831,12 +838,10 @@ $(document).ready(function () {
             if ($(".vote_for").text() !== "0" & had_already_voted_for)
                 $(".vote_for").text(Number($(".vote_for").text()) - 1);
 
-            $(".vote_up").removeClass("disabled");
-            $(".vote_up").removeClass("active");
+            vote_button_disable(".vote_up");
 
             if (!had_already_voted_for & !had_already_voted_against) {
-                $(".vote_down").addClass("active");
-                $(".vote_down").addClass("disabled");
+                vote_button_activate(".vote_down");
             }
         }
     });
