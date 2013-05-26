@@ -795,6 +795,50 @@ $(document).ready(function () {
                 adhocracy.overlay.bindOverlays(target);
             }
         });
+
+        var new_vote = self.attr('class').split(" ")[0];
+        var had_already_voted_for = false;
+        var had_already_voted_against = false;
+
+        $.each($(".vote_up").attr("class").split(" "), function(i, object) {
+            if(object === "active") {
+                had_already_voted_for = true;
+            }
+        });
+
+        $.each($(".vote_down").attr("class").split(" "),function(i, object) {
+            if(object === "active") {
+                had_already_voted_against = true;
+            }
+        });
+
+        if (new_vote === "vote_up") {
+            if (!had_already_voted_for & !had_already_voted_against)
+                $(".vote_for").text(Number($(".vote_for").text()) + 1);
+            if ($(".vote_against").text() !== "0" & had_already_voted_against)
+                $(".vote_against").text(Number($(".vote_against").text()) - 1);
+
+            $(".vote_down").removeClass("disabled");
+            $(".vote_down").removeClass("active");
+
+            if (!had_already_voted_for & !had_already_voted_against) {
+                $(".vote_up").addClass("disabled");
+                $(".vote_up").addClass("active");
+            }
+        } else if (new_vote === "vote_down") {
+            if (!had_already_voted_against & !had_already_voted_for)
+                $(".vote_against").text(Number($(".vote_against").text()) + 1);
+            if ($(".vote_for").text() !== "0" & had_already_voted_for)
+                $(".vote_for").text(Number($(".vote_for").text()) - 1);
+
+            $(".vote_up").removeClass("disabled");
+            $(".vote_up").removeClass("active");
+
+            if (!had_already_voted_for & !had_already_voted_against) {
+                $(".vote_down").addClass("active");
+                $(".vote_down").addClass("disabled");
+            }
+        }
     });
 
     $('#feedback_button').toggle(
